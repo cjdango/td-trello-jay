@@ -48,10 +48,10 @@ export class LoginViewComponent implements OnInit {
     const payload = this.loginForm.value
     this.guestService.login(payload)
       .subscribe(
-        () => {
+        (data) => {
           this.submitted = false
           this.ngForm.resetForm()
-          // this.router.navigateByUrl('') TODO: navigate to /boards
+          localStorage.setItem('user', JSON.stringify(data))
         }, 
         (err) => {
           this.submitted = false
