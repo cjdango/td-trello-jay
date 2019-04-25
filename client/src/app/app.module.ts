@@ -9,6 +9,7 @@ import { UsersModule } from './users/users.module';
 import { BoardsModule } from './boards/boards.module';
 import { MatModule } from './mat.module';
 import { BaseURLInterceptor } from './base-url.interceptor'
+import { HttpHeaderInterceptor } from './http-header.interceptor';
 import { HttpErrorInterceptor } from './http-error.interceptor';
 import { AlertComponent } from './components/alert/alert.component'
 
@@ -28,6 +29,7 @@ import { AlertComponent } from './components/alert/alert.component'
   exports: [MatModule],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: BaseURLInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: HttpHeaderInterceptor , multi: true },
     // { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
