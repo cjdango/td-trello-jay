@@ -1,0 +1,25 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.view.users-view {
+    padding-top: 5rem;
+    height: 100%;
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        width: 400px;
+        margin: 0 auto;
+
+        .spinner-wrapper {
+            display: none;
+            justify-content: center;
+        }
+
+        .btn {
+            margin-top: .5rem;            
+        }
+    }
+}
