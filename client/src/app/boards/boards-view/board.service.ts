@@ -7,15 +7,12 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class BoardService {
-  private boardsURL = 'boards'
+  private boardsURL = 'boards';
 
-  constructor(
-    private http: HttpClient
-  ) {
-  }
+  constructor(private http: HttpClient) {}
 
   fetchBoardList(): Observable<any> {
-    const url = `${this.boardsURL}/`
-    return this.http.get<any>(url)
+    const url = `${this.boardsURL}/`;
+    return this.http.get<any>(url);
   }
 }

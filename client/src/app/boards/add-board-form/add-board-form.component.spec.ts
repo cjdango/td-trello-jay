@@ -8,9 +8,8 @@ describe('AddBoardFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddBoardFormComponent ]
-    })
-    .compileComponents();
+      declarations: [AddBoardFormComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

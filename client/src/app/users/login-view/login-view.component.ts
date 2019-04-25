@@ -14,16 +14,10 @@ import { AlertService } from 'src/app/components/alert/alert.service';
 export class LoginViewComponent implements OnInit {
   @ViewChild('f') ngForm: FormGroupDirective;
 
-  submitted = false
+  submitted = false;
   loginForm = this.fb.group({
-    email: ['', [
-      Validators.required,
-      Validators.email]
-    ],
-    password: ['', [
-      Validators.required,
-      Validators.minLength(8)]
-    ]
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(8)]]
   });
 
   constructor(
@@ -31,50 +25,48 @@ export class LoginViewComponent implements OnInit {
     private guestService: GuestService,
     private router: Router,
     private alertService: AlertService
-  ) { }
+  ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   onSubmit() {
-    this.alertService.clearMessage()
+    this.alertService.clearMessage();
 
     if (!this.loginForm.valid) {
-      return
+      return;
     }
 
-    this.submitted = true
+    this.submitted = true;
 
-    const payload = this.loginForm.value
-    this.guestService.login(payload)
-      .subscribe(
-        (data) => {
-          this.submitted = false
-          this.ngForm.resetForm()
-          localStorage.setItem('user', JSON.stringify(data))
-        }, 
-        (err) => {
-          this.submitted = false
-          if (err instanceof HttpErrorResponse) {
-            const validationErrors = err.error
-            const nonFieldErrs = validationErrors.non_field_errors
-            if (nonFieldErrs) {
-              this.alertService.error(nonFieldErrs[0])
-            }
-            
-            if (err.status === 400) {
-              Object.keys(err.error).forEach(prop => {
-                const formControl = this.loginForm.get(prop);
-                if (formControl) {
-                  // activate the error message                  
-                  formControl.setErrors({
-                    serverError: validationErrors[prop]
-                  });
-                }
-              });
-            }
+    const payload = this.loginForm.value;
+    this.guestService.login(payload).subscribe(
+      data => {
+        this.submitted = false;
+        this.ngForm.resetForm();
+        localStorage.setItem('user', JSON.stringify(data));
+      },
+      err => {
+        this.submitted = false;
+        if (err instanceof HttpErrorResponse) {
+          const validationErrors = err.error;
+          const nonFieldErrs = validationErrors.non_field_errors;
+          if (nonFieldErrs) {
+            this.alertService.error(nonFieldErrs[0]);
           }
-        })
-  }
 
+          if (err.status === 400) {
+            Object.keys(err.error).forEach(prop => {
+              const formControl = this.loginForm.get(prop);
+              if (formControl) {
+                // activate the error message
+                formControl.setErrors({
+                  serverError: validationErrors[prop]
+                });
+              }
+            });
+          }
+        }
+      }
+    );
+  }
 }

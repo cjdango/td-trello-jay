@@ -9,20 +9,17 @@ import { Observable } from 'rxjs';
   styleUrls: ['./boards-view.component.scss']
 })
 export class BoardsViewComponent implements OnInit {
-  boards: Array<any>
+  boards: Array<any>;
 
-  constructor(
-    private boardService: BoardService
-  ) { }
+  constructor(private boardService: BoardService) {}
 
   ngOnInit() {
-    this.getBoards()
+    this.getBoards();
   }
 
   private getBoards() {
     this.boardService.fetchBoardList().subscribe(boards => {
-      this.boards = boards
-    })
+      this.boards = boards;
+    });
   }
-
 }

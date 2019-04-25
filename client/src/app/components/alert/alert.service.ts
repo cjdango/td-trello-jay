@@ -39,6 +39,6 @@ export class AlertService {
   }
 
   clearMessage(): void {
-    this.subject.next()
+    this.subject.next();
   }
 }

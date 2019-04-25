@@ -8,9 +8,8 @@ describe('BoardsViewComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BoardsViewComponent ]
-    })
-    .compileComponents();
+      declarations: [BoardsViewComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

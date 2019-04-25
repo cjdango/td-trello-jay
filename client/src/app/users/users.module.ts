@@ -10,12 +10,12 @@ import { PasswordResetViewComponent } from './password-reset-view/password-reset
 import { PasswordResetConfirmViewComponent } from './password-reset-confirm-view/password-reset-confirm-view.component';
 
 @NgModule({
-  declarations: [SignupViewComponent, LoginViewComponent, PasswordResetViewComponent, PasswordResetConfirmViewComponent],
-  imports: [
-    CommonModule,
-    MatModule,
-    ReactiveFormsModule,
-    AppRoutingModule
-  ]
+  declarations: [
+    SignupViewComponent,
+    LoginViewComponent,
+    PasswordResetViewComponent,
+    PasswordResetConfirmViewComponent
+  ],
+  imports: [CommonModule, MatModule, ReactiveFormsModule, AppRoutingModule]
 })
-export class UsersModule { }
+export class UsersModule {}

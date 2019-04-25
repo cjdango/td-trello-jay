@@ -8,9 +8,8 @@ describe('PasswordResetConfirmViewComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PasswordResetConfirmViewComponent ]
-    })
-    .compileComponents();
+      declarations: [PasswordResetConfirmViewComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

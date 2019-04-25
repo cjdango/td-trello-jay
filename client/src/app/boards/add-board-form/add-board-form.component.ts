@@ -9,18 +9,12 @@ import { FormBuilder, Validators, FormGroupDirective } from '@angular/forms';
 export class AddBoardFormComponent implements OnInit {
   @ViewChild('f') ngForm: FormGroupDirective;
 
-  submitted = false
+  submitted = false;
   addBoardForm = this.fb.group({
-    title: ['', [
-      Validators.required
-    ]]
+    title: ['', [Validators.required]]
   });
 
-  constructor(
-    private fb: FormBuilder
-  ) { }
+  constructor(private fb: FormBuilder) {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

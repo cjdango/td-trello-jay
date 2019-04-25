@@ -12,7 +12,10 @@ const routes: Routes = [
   { path: 'signup', component: SignupViewComponent },
   { path: 'login', component: LoginViewComponent },
   { path: 'forgot-password', component: PasswordResetViewComponent },
-  { path: 'reset-password/:uid/:token', component: PasswordResetConfirmViewComponent },
+  {
+    path: 'reset-password/:uid/:token',
+    component: PasswordResetConfirmViewComponent
+  },
   { path: 'boards', component: BoardsViewComponent }
 ];
 
@@ -20,4 +23,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
