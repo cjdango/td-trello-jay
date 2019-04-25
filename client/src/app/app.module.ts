@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';;
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { UsersModule } from './users/users.module';
+import { BoardsModule } from './boards/boards.module';
 import { MatModule } from './mat.module';
 import { BaseURLInterceptor } from './base-url.interceptor'
 import { HttpErrorInterceptor } from './http-error.interceptor';
@@ -21,7 +22,8 @@ import { AlertComponent } from './components/alert/alert.component'
     BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
-    UsersModule
+    UsersModule,
+    BoardsModule
   ],
   exports: [MatModule],
   providers: [
