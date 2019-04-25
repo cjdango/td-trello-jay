@@ -15,10 +15,10 @@ class BoardAPI(ViewSet):
 
     def create(self, *args, **kwargs):
         user = self.request.user
-        serializer = BoardSerializer(data=self.request.data, user=user, context={'request': self.request})
+        serializer = BoardSerializer(data=self.request.data, context={'request': self.request})
 
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(owner=user)
             return Response(serializer.data, status=200)
 
         return Response(serializer.errors, status=400)

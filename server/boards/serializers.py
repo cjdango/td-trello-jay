@@ -8,16 +8,11 @@ class BoardSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.PrimaryKeyRelatedField(read_only=True)
     members = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
     
-
-    def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)
-        super(BoardSerializer, self).__init__(*args, **kwargs)
-
     class Meta:
         model = Board
         fields = ['pk', 'url', 'title', 'owner', 'members']
 
-    def save(self, *args, **kwargs):
-        board = super(BoardSerializer, self).save(owner=self.user, *args, **kwargs)
-        board.members.add(self.user)
-        return self.instance
+    def create(self, validated_data):
+        board = Board.objects.create(**validated_data)
+        board.members.add(validated_data['owner'])
+        return board
