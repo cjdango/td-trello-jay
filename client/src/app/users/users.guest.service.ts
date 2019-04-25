@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 
 import { User } from './users.interface';
+import { SetNewPassPayload } from './password-reset-confirm-view/interface';
 
 @Injectable({
   providedIn: 'root'
@@ -28,16 +29,12 @@ export class GuestService {
     return this.http.post<any>(url, payload);
   }
 
-  setNewPassword(payload: {
-    password: string;
-    password2: string;
-    uid: string;
-    token: string;
-  }): Observable<any> {
-    const { uid, token } = payload;
+  setNewPassword(
+    payload: SetNewPassPayload,
+    params: { uid: string; token: string }
+  ): Observable<any> {
+    const { uid, token } = params;
     const url = `${this.usersURL}/reset/${uid}/${token}/`;
-    delete payload.uid;
-    delete payload.token;
     return this.http.post<any>(url, payload);
   }
 }

@@ -6,6 +6,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { mustMatch } from '../users.validators';
 import { GuestService } from '../users.guest.service';
 import { AlertService } from 'src/app/components/alert/alert.service';
+import { SetNewPassPayload } from './interface';
 
 @Component({
   selector: 'app-password-reset-confirm-view',
@@ -45,9 +46,10 @@ export class PasswordResetConfirmViewComponent implements OnInit {
     const uid = paramMap.get('uid');
     const token = paramMap.get('token');
 
-    const payload = { ...this.passwordResetConfirmForm.value, uid, token };
+    const payload: SetNewPassPayload = { ...this.passwordResetConfirmForm.value };
+    const params = { uid, token };
 
-    this.guestService.setNewPassword(payload).subscribe(
+    this.guestService.setNewPassword(payload, params).subscribe(
       () => {
         this.submitted = false;
         this.ngForm.resetForm();
