@@ -1,3 +1,8 @@
-<p>
-  boards-view works!
-</p>
+<div class="boards-view boards-list">
+  <app-add-board-form></app-add-board-form>
+  <ul class="board-list">
+    <li class="card" *ngFor="let board of boards">
+      <h1>{{board.title}}</h1>
+    </li>
+  </ul>
+</div>
