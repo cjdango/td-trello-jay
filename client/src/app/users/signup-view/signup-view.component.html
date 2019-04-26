@@ -46,8 +46,8 @@
       </mat-error>
     </mat-form-field>
 
-    <div class="spinner-wrapper" [class.submitted]="submitted"><mat-spinner [diameter]="25"></mat-spinner></div>
-    <button mat-flat-button color="primary" type="submit" class="btn" [disabled]="submitted">Submit</button>
+    <div class="spinner-wrapper" [class.submitted]="signupForm.submitted"><mat-spinner [diameter]="25"></mat-spinner></div>
+    <button mat-flat-button color="primary" type="submit" class="btn" [disabled]="signupForm.submitted">Submit</button>
     <a mat-stroked-button color="warm" class="btn login-link" routerLink="/login">Login</a>
   </form>
 </div>
