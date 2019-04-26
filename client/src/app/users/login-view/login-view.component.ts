@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, Validators, FormGroupDirective } from '@angular/forms';
+import { FormGroupDirective } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
 
 import { GuestService } from '../users.guest.service';
 import { AlertService } from 'src/app/components/alert/alert.service';
+import { LoginForm } from './login.form';
 
 @Component({
   selector: 'app-login-view',
@@ -14,57 +14,39 @@ import { AlertService } from 'src/app/components/alert/alert.service';
 export class LoginViewComponent implements OnInit {
   @ViewChild('f') ngForm: FormGroupDirective;
 
-  submitted = false;
-  loginForm = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(8)]]
-  });
+  loginForm: LoginForm;
 
   constructor(
-    private fb: FormBuilder,
     private guestService: GuestService,
     private router: Router,
     private alertService: AlertService
-  ) {}
+  ) {
+    this.loginForm = new LoginForm();
+  }
 
   ngOnInit() {}
 
   onSubmit() {
+    // Clear alert message.
+    // There might be message from previous
+    // onSubmit() calls
     this.alertService.clearMessage();
+    this.loginForm.handleSubmit(this.sendRequest.bind(this));
+  }
 
-    if (!this.loginForm.valid) {
-      return;
-    }
-
-    this.submitted = true;
-
-    const payload = this.loginForm.value;
+  sendRequest(payload) {
     this.guestService.login(payload).subscribe(
       data => {
-        this.submitted = false;
+        this.loginForm.handleSuccess();
         this.ngForm.resetForm();
         localStorage.setItem('user', JSON.stringify(data));
       },
       err => {
-        this.submitted = false;
-        if (err instanceof HttpErrorResponse) {
-          const validationErrors = err.error;
-          const nonFieldErrs = validationErrors.non_field_errors;
-          if (nonFieldErrs) {
-            this.alertService.error(nonFieldErrs[0]);
-          }
+        const nonFieldErrs = this.loginForm.handleErrors(err);
 
-          if (err.status === 400) {
-            Object.keys(err.error).forEach(prop => {
-              const formControl = this.loginForm.get(prop);
-              if (formControl) {
-                // activate the error message
-                formControl.setErrors({
-                  serverError: validationErrors[prop]
-                });
-              }
-            });
-          }
+        // Handle non field errors separately
+        if (nonFieldErrs) {
+          this.alertService.error(nonFieldErrs[0]);
         }
       }
     );
