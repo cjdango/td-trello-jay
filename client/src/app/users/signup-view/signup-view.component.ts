@@ -3,9 +3,9 @@ import { FormBuilder, Validators, FormGroupDirective } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import { mustMatch } from '../users.validators';
 import { GuestService } from '../users.guest.service';
 import { AlertService } from 'src/app/components/alert/alert.service';
+import { SignupForm } from './signup.form';
 
 @Component({
   selector: 'app-signup-view',
@@ -15,62 +15,39 @@ import { AlertService } from 'src/app/components/alert/alert.service';
 export class SignupViewComponent implements OnInit {
   @ViewChild('f') ngForm: FormGroupDirective;
 
-  submitted = false;
-  signupForm = this.fb.group(
-    {
-      first_name: ['', [Validators.required, Validators.minLength(2)]],
-      last_name: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
-      password2: ['', [Validators.required]]
-    },
-    { validator: mustMatch('password', 'password2') }
-  );
+  signupForm: SignupForm;
 
   constructor(
-    private fb: FormBuilder,
     private guestService: GuestService,
     private router: Router,
     private alertService: AlertService
-  ) {}
+  ) {
+    this.signupForm = new SignupForm();
+  }
 
   ngOnInit() {}
 
   onSubmit() {
-    if (!this.signupForm.valid) {
-      return;
-    }
+    // Clear alert message.
+    // There might be message from previous
+    // onSubmit() calls
+    this.alertService.clearMessage();
+    this.signupForm.handleSubmit(this.sendRequest.bind(this));
+  }
 
-    this.submitted = true;
-
-    const payload = this.signupForm.value;
+  sendRequest(payload) {
     this.guestService.createUser(payload).subscribe(
       () => {
-        this.submitted = false;
         this.ngForm.resetForm();
         this.router.navigateByUrl('/login');
         this.alertService.success('Success, You can now login to your account');
       },
       err => {
-        this.submitted = false;
-        if (err instanceof HttpErrorResponse) {
-          const validationErrors = err.error;
-          const nonFieldErrs = validationErrors.non_field_errors;
-          if (nonFieldErrs) {
-            this.alertService.error(nonFieldErrs[0]);
-          }
+        const nonFieldErrs = this.signupForm.handleErrors(err);
 
-          if (err.status === 400) {
-            Object.keys(err.error).forEach(prop => {
-              const formControl = this.signupForm.get(prop);
-              if (formControl) {
-                // activate the error message
-                formControl.setErrors({
-                  serverError: validationErrors[prop]
-                });
-              }
-            });
-          }
+        // Handle non field errors separately
+        if (nonFieldErrs) {
+          this.alertService.error(nonFieldErrs[0]);
         }
       }
     );
