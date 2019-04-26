@@ -1,10 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, Validators, FormGroupDirective } from '@angular/forms';
-import { HttpErrorResponse } from '@angular/common/http';
+import { FormGroupDirective } from '@angular/forms';
 
 import { GuestService } from '../users.guest.service';
 import { AlertService } from 'src/app/components/alert/alert.service';
+import { PassResetForm } from './pass-reset.form';
 
+/**
+ * @ngForm Used to reset form since FormGroup.reset()
+ * won't work when using material angular.
+ */
 @Component({
   selector: 'app-password-reset-view',
   templateUrl: './password-reset-view.component.html',
@@ -13,57 +17,40 @@ import { AlertService } from 'src/app/components/alert/alert.service';
 export class PasswordResetViewComponent implements OnInit {
   @ViewChild('f') ngForm: FormGroupDirective;
 
-  submitted = false;
-  passwordResetForm = this.fb.group({
-    email: ['', [Validators.required, Validators.email]]
-  });
+  passwordResetForm: PassResetForm;
 
   constructor(
-    private fb: FormBuilder,
     private guestService: GuestService,
     private alertService: AlertService
-  ) {}
+  ) {
+    this.passwordResetForm = new PassResetForm();
+  }
 
   ngOnInit() {}
 
   onSubmit() {
+    // Clear alert message.
+    // There might be message from previous
+    // onSubmit() calls
     this.alertService.clearMessage();
+    this.passwordResetForm.handleSubmit(this.sendRequest.bind(this));
+  }
 
-    if (!this.passwordResetForm.valid) {
-      return;
-    }
-
-    this.submitted = true;
-
-    const payload = this.passwordResetForm.value;
+  private sendRequest(payload) {
     this.guestService.requestPasswordReset(payload).subscribe(
       () => {
-        this.submitted = false;
         this.ngForm.resetForm();
+        this.passwordResetForm.handleSuccess();
         this.alertService.success(
           'An email containing confirmation link has been successfuly sent.'
         );
       },
       err => {
-        this.submitted = false;
-        if (err instanceof HttpErrorResponse) {
-          const validationErrors = err.error;
-          const nonFieldErrs = validationErrors.non_field_errors;
-          if (nonFieldErrs) {
-            this.alertService.error(nonFieldErrs[0]);
-          }
+        const nonFieldErrs = this.passwordResetForm.handleErrors(err);
 
-          if (err.status === 400) {
-            Object.keys(err.error).forEach(prop => {
-              const formControl = this.passwordResetForm.get(prop);
-              if (formControl) {
-                // activate the error message
-                formControl.setErrors({
-                  serverError: validationErrors[prop]
-                });
-              }
-            });
-          }
+        // Handle non field errors separately
+        if (nonFieldErrs) {
+          this.alertService.error(nonFieldErrs[0]);
         }
       }
     );
