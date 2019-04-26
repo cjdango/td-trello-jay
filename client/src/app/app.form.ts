@@ -1,6 +1,5 @@
-import { FormGroup, AbstractControl, FormGroupDirective } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ViewChild } from '@angular/core';
 
 export class AppForm extends FormGroup {
   submitted = false;
@@ -28,9 +27,14 @@ export class AppForm extends FormGroup {
   /**
    * Handle field errors.
    * @param err An HttpErrorResponse instance
+   * @param mapObj Use to map `{'error_key_from_server': 'to_form_control_name'}`
+   * e.g `{'password': 'new_password1'}`
    * @return `non_field_errors` or `null`
    */
-  handleErrors(err): { non_field_errors: Array<string> } | void {
+  handleErrors(
+    err,
+    mapObj: { [key: string]: string } = {}
+  ): { non_field_errors: Array<string> } | void {
     this.submitted = false;
 
     if (err instanceof HttpErrorResponse) {
@@ -39,8 +43,10 @@ export class AppForm extends FormGroup {
 
       if (err.status === 400) {
         Object.keys(validationErrors).forEach(prop => {
+          const formControlName = mapObj.hasOwnProperty(prop) ? mapObj[prop] : prop;
+
           // get the form control that matches it's name to the prop
-          const formControl = this.get(prop);
+          const formControl = this.get(formControlName);
 
           // check if such form control exist
           if (formControl) {
