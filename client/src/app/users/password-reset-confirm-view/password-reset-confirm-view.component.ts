@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators, FormGroupDirective } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 
-import { mustMatch } from '../users.validators';
 import { GuestService } from '../users.guest.service';
 import { AlertService } from 'src/app/components/alert/alert.service';
 import { SetNewPassPayload } from './interface';
+import { PassResetConfirmForm } from './pass-reset-confirm.form';
 
 @Component({
   selector: 'app-password-reset-confirm-view',
@@ -16,42 +16,39 @@ import { SetNewPassPayload } from './interface';
 export class PasswordResetConfirmViewComponent implements OnInit {
   @ViewChild('f') ngForm: FormGroupDirective;
 
-  submitted = false;
-  passwordResetConfirmForm = this.fb.group(
-    {
-      new_password1: ['', [Validators.required, Validators.minLength(8)]],
-      new_password2: ['', [Validators.required]]
-    },
-    { validator: mustMatch('new_password1', 'new_password2') }
-  );
+  passwordResetConfirmForm: PassResetConfirmForm;
+
+  private paramMap: ParamMap;
 
   constructor(
-    private fb: FormBuilder,
     private guestService: GuestService,
     private router: Router,
     private route: ActivatedRoute,
     private alertService: AlertService
-  ) {}
+  ) {
+    this.paramMap = this.route.snapshot.paramMap;
+    this.passwordResetConfirmForm = new PassResetConfirmForm();
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   onSubmit() {
-    if (!this.passwordResetConfirmForm.valid) {
-      return;
-    }
+    // Clear alert message.
+    // There might be message from previous
+    // onSubmit() calls
+    this.alertService.clearMessage();
+    this.passwordResetConfirmForm.handleSubmit(this.sendRequest.bind(this));
+  }
 
-    this.submitted = true;
-
-    const { paramMap } = this.route.snapshot;
-    const uid = paramMap.get('uid');
-    const token = paramMap.get('token');
-
-    const payload: SetNewPassPayload = { ...this.passwordResetConfirmForm.value };
+  private sendRequest(payload: SetNewPassPayload) {
+    const uid = this.paramMap.get('uid');
+    const token = this.paramMap.get('token');
     const params = { uid, token };
 
     this.guestService.setNewPassword(payload, params).subscribe(
       () => {
-        this.submitted = false;
+        this.passwordResetConfirmForm.handleSuccess();
         this.ngForm.resetForm();
         this.router.navigateByUrl('/login');
         this.alertService.success(
@@ -59,29 +56,13 @@ export class PasswordResetConfirmViewComponent implements OnInit {
         );
       },
       err => {
-        this.submitted = false;
-        if (err instanceof HttpErrorResponse) {
-          const validationErrors = err.error;
-          const nonFieldErrs = validationErrors.non_field_errors;
-          if (nonFieldErrs) {
-            this.alertService.error(nonFieldErrs[0]);
-          }
+        const nonFieldErrs = this.passwordResetConfirmForm.handleErrors(err, {
+          password: 'new_password1'
+        });
 
-          if (err.status === 400) {
-            Object.keys(err.error).forEach(prop => {
-              const formControlName =
-                prop === 'password' ? 'new_password1' : '';
-              const formControl = this.passwordResetConfirmForm.get(
-                formControlName
-              );
-              if (formControl) {
-                // activate the error message
-                formControl.setErrors({
-                  serverError: validationErrors[prop]
-                });
-              }
-            });
-          }
+        // Handle non field errors separately
+        if (nonFieldErrs) {
+          this.alertService.error(nonFieldErrs[0]);
         }
       }
     );
