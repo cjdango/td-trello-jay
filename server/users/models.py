@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
+from rest_framework.authtoken.models import Token
+
 from .managers import UserManager
 
 
@@ -22,6 +24,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.email}"
+
+    def get_or_create_token(self):
+        try:
+            token = Token.objects.get(user=self)
+        except Token.DoesNotExist:
+            token = Token.objects.create(user=self)
+        return token
 
 
 class ResetPassToken(models.Model):

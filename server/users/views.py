@@ -3,7 +3,6 @@ from django.contrib.auth.tokens import default_token_generator
 
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
-from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
 
 from .models import User, ResetPassToken
@@ -33,7 +32,7 @@ class GuestAPI(ViewSet):
         serializer = UserAuthSerializer(data=self.request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.user
-        token, created = Token.objects.get_or_create(user=user)
+        token = user.get_or_create_token()        
         user_logged_in.send(sender=user.__class__, request=self.request, user=user)
         context = {
             'token':token.key,
