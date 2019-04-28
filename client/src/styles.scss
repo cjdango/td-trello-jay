@@ -16,6 +16,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
         .spinner-wrapper {
             display: none;
             justify-content: center;
+
+            &.submitted {
+                display: inline-flex;
+            }
         }
 
         .btn {
