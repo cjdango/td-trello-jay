@@ -2,13 +2,11 @@ from django.urls import path
 from .views import GuestAPI, UserAPI
 
 user_create = GuestAPI.as_view({
-    'get': 'list',
     'post': 'create'
 })
 
 user_login =  GuestAPI.as_view({
-    'post':'login',
-    'get':'list',
+    'post':'login'
 })
 
 password_reset = UserAPI.as_view({

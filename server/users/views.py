@@ -21,13 +21,6 @@ class GuestAPI(ViewSet):
     """Guest API"""
     permission_classes = (AllowAny,)
 
-    def list(self, *args, **kwargs):
-        """lists all users
-        """
-        user = User.objects.all()
-        serializer = UserSerializer(user, many=True)
-        return Response(serializer.data, status=200)
-
     def create(self, *args, **kwargs):
         """creates a user"""
         serializer = UserSerializer(data=self.request.data)
