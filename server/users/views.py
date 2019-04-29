@@ -46,12 +46,10 @@ class UserAPI(ViewSet):
 
     def password_reset(self, *args, **kwargs):
         """Used for requesting password reset"""
-        client_addr = self.request.META['REMOTE_ADDR']
         serializer = PasswordResetSerializer(data=self.request.data)
-        if serializer.is_valid():
-            serializer.save(request=self.request, domain_override=f'{client_addr}:4200')
-            return Response(status=200)
-        return Response(serializer.errors, status=400)
+        serializer.is_valid(raise_exception=True)
+        serializer.save_reset_token()
+        return Response(status=200)
    
     def password_reset_confirm(self, *args, **kwargs):
         assert 'uidb64' in kwargs and 'token' in kwargs

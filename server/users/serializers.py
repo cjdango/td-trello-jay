@@ -3,6 +3,7 @@ import os
 import gzip
 
 from django.core import exceptions
+from django.conf import settings
 import django.contrib.auth.password_validation as validators
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
@@ -100,61 +101,41 @@ class UserSerializer(serializers.ModelSerializer):
 class PasswordResetSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=254)
 
-    def send_mail(self, subject_template_name, email_template_name,
-                  context, from_email, to_email, html_email_template_name=None):
+    SUBJECT_TEMPLATE_NAME = 'registration/password_reset_subject.txt'
+    EMAIL_TEMPLATE_NAME = 'registration/password_reset_email.html'
+
+    def send_mail(self, context, to_email):
         """
         Send a django.core.mail.EmailMultiAlternatives to `to_email`.
         """
-        subject = loader.render_to_string(subject_template_name, context)
+        subject = loader.render_to_string(self.SUBJECT_TEMPLATE_NAME, context)
+
         # Email subject *must not* contain newlines
         subject = ''.join(subject.splitlines())
-        body = loader.render_to_string(email_template_name, context)
+        body = loader.render_to_string(self.EMAIL_TEMPLATE_NAME, context)
 
-        email_message = EmailMultiAlternatives(subject, body, from_email, [to_email])
-        if html_email_template_name is not None:
-            html_email = loader.render_to_string(html_email_template_name, context)
-            email_message.attach_alternative(html_email, 'text/html')
-
+        email_message = EmailMultiAlternatives(subject, body, to=[to_email])
         email_message.send()
 
 
-    def save(self, domain_override=None,
-             subject_template_name='registration/password_reset_subject.txt',
-             email_template_name='registration/password_reset_email.html',
-             use_https=False, token_generator=default_token_generator,
-             from_email=None, request=None, html_email_template_name=None,
-             extra_email_context=None):
+    def save_reset_token(self):
         """
         Generate a one-use only link for resetting password and send it to the
         user.
         """
         email = self.validated_data["email"]
-        users = User.objects.filter(email__iexact=email)
-        has_usable_pass_users = (u for u in users if u.has_usable_password())
-        for user in has_usable_pass_users:
-            if not domain_override:
-                current_site = get_current_site(request)
-                site_name = current_site.name
-                domain = current_site.domain
-            else:
-                site_name = domain = domain_override
+        user = User.objects.filter(email__iexact=email).first()
+        if user and user.has_usable_password():
             context = {
-                'email': email,
-                'domain': domain,
-                'site_name': site_name,
+                'domain': settings.CLIENT_IP,
+                'site_name': settings.SITE_NAME,
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'user': user,
-                'token': token_generator.make_token(user),
-                'protocol': 'https' if use_https else 'http',
-                **(extra_email_context or {}),
+                'token': default_token_generator.make_token(user),
             }
 
-            ResetPassToken.objects.get_or_create(uid=context['uid'], token=context['token'])
+            reset_pass_token = ResetPassToken.objects.get_or_create(uid=context['uid'], token=context['token'])
 
-            self.send_mail(
-                subject_template_name, email_template_name, context, from_email,
-                email, html_email_template_name=html_email_template_name,
-            )
+            self.send_mail(context, email)     
 
 
 class SetPasswordSerializer(serializers.Serializer):

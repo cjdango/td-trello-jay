@@ -129,9 +129,12 @@ STATIC_URL = '/static/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+CLIENT_DOMAIN = 'localhost:4200'
+CLIENT_IP = '127.0.0.1:4200'
+
 CORS_ORIGIN_WHITELIST = (
-    'localhost:4200',
-    '127.0.0.1:4200',
+    CLIENT_DOMAIN,
+    CLIENT_IP,
 )
 
 REST_FRAMEWORK = {
@@ -143,3 +146,5 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ),
 }
+
+SITE_NAME = 'http://trelloclone.com'
