@@ -59,12 +59,14 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(errors)
 
         return data
-
-    def save(self):
-        self.validated_data.pop('password2')
-        user = User.objects.create(**self.validated_data)
-        user.set_password(self.validated_data['password'])
+        
+    def create(self, validated_data):
+        user_data = dict(self.validated_data)
+        user_data.pop('password2')
+        user = User.objects.create_user(**user_data)
+        user.set_password(user_data['password'])
         user.save()
+        return user
 
 
 class PasswordResetSerializer(serializers.Serializer):
