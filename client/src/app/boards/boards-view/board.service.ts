@@ -3,16 +3,16 @@ import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
 
+import { BOARDS, BOARDS_CREATE } from '../../constants/endpoint.constants';
+
 @Injectable({
   providedIn: 'root'
 })
 export class BoardService {
-  private boardsURL = 'boards';
-
   constructor(private http: HttpClient) {}
 
   fetchBoardList(): Observable<any> {
-    const url = `${this.boardsURL}/`;
+    const url = BOARDS;
     return this.http.get<any>(url);
   }
 }

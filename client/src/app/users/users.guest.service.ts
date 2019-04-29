@@ -5,27 +5,33 @@ import { Observable, of } from 'rxjs';
 
 import { User } from './users.interface';
 import { SetNewPassPayload } from './password-reset-confirm-view/interface';
+import { resolveEndpoint } from '../utils/http.utils';
+import {
+  USERS_PASS_RESET_CONFIRM,
+  USERS_PASS_RESET,
+  USERS_LOGIN,
+  USERS_SIGNUP
+} from '../constants/endpoint.constants';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GuestService {
-  private usersURL = 'users';
 
   constructor(private http: HttpClient) {}
 
   login(creds: { email: string; password: string }): Observable<any> {
-    const url = `${this.usersURL}/login/`;
+    const url = USERS_LOGIN;
     return this.http.post<any>(url, creds);
   }
 
   createUser(user: User): Observable<any> {
-    const url = `${this.usersURL}/create/`;
+    const url = USERS_SIGNUP;
     return this.http.post<any>(url, user);
   }
 
   requestPasswordReset(payload: { email: string }): Observable<any> {
-    const url = `${this.usersURL}/password_reset/`;
+    const url = USERS_PASS_RESET;
     return this.http.post<any>(url, payload);
   }
 
@@ -33,8 +39,7 @@ export class GuestService {
     payload: SetNewPassPayload,
     params: { uid: string; token: string }
   ): Observable<any> {
-    const { uid, token } = params;
-    const url = `${this.usersURL}/reset/${uid}/${token}/`;
+    const url = resolveEndpoint(USERS_PASS_RESET_CONFIRM, params);
     return this.http.post<any>(url, payload);
   }
 }
