@@ -60,7 +60,7 @@ class UserAPI(ViewSet):
                 reset_token_obj = ResetPassToken.objects.get(uid=kwargs['uidb64'], token=kwargs['token'])
                 reset_token = reset_token_obj.token
                 if default_token_generator.check_token(user, reset_token):
-                    serializer = SetPasswordSerializer(data=self.request.data, user=user)
+                    serializer = SetPasswordSerializer(data=self.request.data, instance=user)
                     if serializer.is_valid():
                         serializer.save()
                         reset_token_obj.delete()

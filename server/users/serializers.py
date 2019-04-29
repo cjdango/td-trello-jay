@@ -146,10 +146,6 @@ class SetPasswordSerializer(serializers.Serializer):
     new_password1 = serializers.CharField()
     new_password2 = serializers.CharField()
 
-    def __init__(self, user, *args, **kwargs):
-        self.user = user
-        super().__init__(*args, **kwargs)
-
     def validate(self, data):
         password1 = data['new_password1']
         password2 = data['new_password2']
@@ -161,7 +157,7 @@ class SetPasswordSerializer(serializers.Serializer):
                 errors['password'] = ["Passwords does not match"]
 
         try:
-            validators.validate_password(password=password2, user=self.user)
+            validators.validate_password(password=password2, user=User)
         except exceptions.ValidationError as e:
             errors['password'] += list(e.messages)
 
@@ -170,9 +166,8 @@ class SetPasswordSerializer(serializers.Serializer):
 
         return data
     
-    def save(self, commit=True):
-        password = self.validated_data["new_password1"]
-        self.user.set_password(password)
-        if commit:
-            self.user.save()
-        return self.user
+    def update(self, instance, validated_data):
+        password = validated_data["new_password1"]
+        instance.set_password(password)
+        instance.save()
+        return instance
