@@ -23,10 +23,9 @@ class GuestAPI(ViewSet):
     def create(self, *args, **kwargs):
         """creates a user"""
         serializer = UserSerializer(data=self.request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(status=201)
-        return Response(serializer.errors, status=400)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=201)
     
     def login(self, *args, **kwargs):
         serializer = UserAuthSerializer(data=self.request.data)
