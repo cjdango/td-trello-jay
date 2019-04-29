@@ -1,4 +1,6 @@
 from collections import defaultdict
+import os
+import gzip
 
 from django.core import exceptions
 import django.contrib.auth.password_validation as validators
@@ -8,6 +10,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template import loader
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
+from django import __file__ as django_dir
 
 from rest_framework import serializers
 
@@ -36,29 +39,54 @@ class UserSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(write_only=True)
     password = serializers.CharField(write_only=True)
 
+    PASS_MIN_LENGTH = 8
+
     class Meta:
         model = User
         fields = ['email', 'first_name', 'last_name', 'password', 'password2']
+    
+    def __init__(self, *args, **kwargs): 
+        super(UserSerializer, self).__init__(*args, **kwargs)
+        self._store_common_passwords()
+        
+    def _store_common_passwords(self):
+        """
+        Open and save common passwords into 
+        self.commont_passwords for validation reference
+        """
+        pass_list_path = os.path.dirname(django_dir) + '/contrib/auth/common-passwords.txt.gz'
+        try:
+            with gzip.open(str(pass_list_path)) as f:
+                common_passwords_lines = f.read().decode().splitlines()
+        except IOError:
+            with open(str(pass_list_path)) as f:
+                common_passwords_lines = f.readlines()
+        
+        self.common_passwords = {p.strip() for p in common_passwords_lines}
 
 
     def validate(self, data):
         password = data['password']
         password2 = data['password2']
 
-        errors = defaultdict(list)
-
         if password != password2:
-            errors['password'] = ["Passwords does not match"]
-
-        try:
-            validators.validate_password(password=password, user=User)
-        except exceptions.ValidationError as e:
-            errors['password'] += list(e.messages)
-
-        if errors:
-            raise serializers.ValidationError(errors)
+            raise serializers.ValidationError({
+                'password2': ["Passwords does not match"]
+            })            
 
         return data
+    
+    def validate_password(self, password):
+        if password.isdigit():
+            raise serializers.ValidationError('This password is entirely numeric.')
+            
+        if password in self.common_passwords:
+            raise serializers.ValidationError('This password is too common.')
+
+        if len(password) < self.PASS_MIN_LENGTH:
+            raise serializers.ValidationError(f'This password is too short. It must contain at least {self.PASS_MIN_LENGTH} characters.')
+
+        return password
         
     def create(self, validated_data):
         user_data = dict(self.validated_data)
