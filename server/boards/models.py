@@ -36,3 +36,23 @@ class List(models.Model):
             self.position = (max_pos.get('position__max') or 0) + 1
 
         return super(List, self).save(*args, **kwargs)
+
+
+class Card(models.Model):
+    title = models.CharField(max_length=50)
+    lst = models.ForeignKey(List, on_delete=models.CASCADE)
+    is_archived = models.BooleanField(default=False)
+    position = models.DecimalField(unique=True, max_digits=10, decimal_places=5)
+
+    class Meta:
+        ordering = ['position']
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if self.position is None:
+            max_pos = Card.objects.all().aggregate(models.Max('position'))
+            self.position = (max_pos.get('position__max') or 0) + 1
+
+        return super(Card, self).save(*args, **kwargs)
