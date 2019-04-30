@@ -24,7 +24,7 @@ class ListSerializer(serializers.HyperlinkedModelSerializer):
     
     class Meta:
         model = List
-        fields = ['pk', 'url', 'board', 'title']
+        fields = ['pk', 'url', 'position', 'board', 'title']
 
     def create(self, validated_data):
         lst = List.objects.create(**validated_data)
@@ -32,5 +32,6 @@ class ListSerializer(serializers.HyperlinkedModelSerializer):
 
     def update(self, instance, validated_data):
         instance.title = validated_data.get('title', instance.title)
+        instance.position = validated_data.get('position', instance.position)
         instance.save()
         return instance

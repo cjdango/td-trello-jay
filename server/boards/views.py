@@ -46,7 +46,7 @@ class ListAPI(ViewSet):
         board = get_object_or_404(Board, pk=kwargs['board_pk'], is_archived=False)
         self.check_object_permissions(self.request, board)
 
-        serializer = ListSerializer(data=self.request.data, context={'request': self.request})
+        serializer = ListSerializer(data=self.request.data, context={'request': self.request}, partial=True)
 
         if serializer.is_valid():
             serializer.save(board=board)
@@ -69,7 +69,7 @@ class ListAPI(ViewSet):
         serializer = ListSerializer(lst, context={'request': self.request})
         return Response(serializer.data, status=200)
     
-    def update_title(self, *args, **kwargs):
+    def update(self, *args, **kwargs):
         lst = get_object_or_404(List, pk=kwargs['pk'], is_archived=False)
         self.check_object_permissions(self.request, lst)
         serializer = ListSerializer(
