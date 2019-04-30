@@ -29,3 +29,8 @@ class ListSerializer(serializers.HyperlinkedModelSerializer):
     def create(self, validated_data):
         lst = List.objects.create(**validated_data)
         return lst
+
+    def update(self, instance, validated_data):
+        instance.title = validated_data.get('title', instance.title)
+        instance.save()
+        return instance

@@ -16,7 +16,8 @@ list_create = ListAPI.as_view({
 })
 
 list_fetch = ListAPI.as_view({
-    'get': 'fetch'
+    'get': 'fetch',
+    'put': 'update_title',
 })
 
 app_name = 'boards'

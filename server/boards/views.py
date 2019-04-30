@@ -68,3 +68,16 @@ class ListAPI(ViewSet):
         
         serializer = ListSerializer(lst, context={'request': self.request})
         return Response(serializer.data, status=200)
+    
+    def update_title(self, *args, **kwargs):
+        lst = get_object_or_404(List, pk=kwargs['pk'], is_archived=False)
+        self.check_object_permissions(self.request, lst)
+        serializer = ListSerializer(
+            lst, 
+            data=self.request.data, 
+            context={'request': self.request},
+            partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=200)
