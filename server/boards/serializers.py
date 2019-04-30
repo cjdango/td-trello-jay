@@ -21,10 +21,11 @@ class BoardSerializer(serializers.HyperlinkedModelSerializer):
 class ListSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name="boards:list_fetch")
     board = serializers.PrimaryKeyRelatedField(read_only=True)
+    is_archived = serializers.BooleanField(write_only=True)
     
     class Meta:
         model = List
-        fields = ['pk', 'url', 'position', 'board', 'title']
+        fields = ['pk', 'url', 'position', 'is_archived', 'board', 'title']
 
     def create(self, validated_data):
         lst = List.objects.create(**validated_data)
@@ -33,5 +34,6 @@ class ListSerializer(serializers.HyperlinkedModelSerializer):
     def update(self, instance, validated_data):
         instance.title = validated_data.get('title', instance.title)
         instance.position = validated_data.get('position', instance.position)
+        instance.is_archived = validated_data.get('is_archived', instance.is_archived)
         instance.save()
         return instance
