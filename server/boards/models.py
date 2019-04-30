@@ -20,6 +20,14 @@ class List(models.Model):
     title = models.CharField(max_length=50)
     board = models.ForeignKey(Board, on_delete=models.CASCADE)
     is_archived = models.BooleanField(default=False)
+    position = models.PositiveIntegerField(unique=True)
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if self.position is None:
+            max_pos = List.objects.all().aggregate(models.Max('position'))
+            self.position = (max_pos.get('position__max') or 0) + 1
+
+        return super(List, self).save(*args, **kwargs)
