@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.db import models
 from django.contrib.auth import get_user_model
 
@@ -20,7 +22,7 @@ class List(models.Model):
     title = models.CharField(max_length=50)
     board = models.ForeignKey(Board, on_delete=models.CASCADE)
     is_archived = models.BooleanField(default=False)
-    position = models.DecimalField(unique=True, max_digits=5, decimal_places=5)
+    position = models.DecimalField(unique=True, max_digits=10, decimal_places=5)
 
     def __str__(self):
         return self.title
