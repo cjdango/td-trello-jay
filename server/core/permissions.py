@@ -1,6 +1,6 @@
 from rest_framework import permissions
 
-from boards.models import Board, List
+from boards.models import Board, List, Card
 
 
 class IsMember(permissions.BasePermission):
@@ -15,4 +15,6 @@ class IsMember(permissions.BasePermission):
             return obj.members.filter(pk=request.user.pk).exists()
         elif isinstance(obj, List):
             return obj.board.members.filter(pk=request.user.pk).exists()
+        elif isinstance(obj, Card):
+            return obj.lst.board.members.filter(pk=request.user.pk).exists()
          
