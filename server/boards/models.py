@@ -27,6 +27,9 @@ class List(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        ordering = ['position']
+
     def save(self, *args, **kwargs):
         if self.position is None:
             max_pos = List.objects.all().aggregate(models.Max('position'))
