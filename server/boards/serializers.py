@@ -7,15 +7,22 @@ class BoardSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name="boards:board_fetch")
     owner = serializers.PrimaryKeyRelatedField(read_only=True)
     members = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
+    is_archived = serializers.BooleanField(write_only=True)
     
     class Meta:
         model = Board
-        fields = ['pk', 'url', 'title', 'owner', 'members']
+        fields = ['pk', 'url', 'title', 'is_archived', 'owner', 'members']
 
     def create(self, validated_data):
         board = Board.objects.create(**validated_data)
         board.members.add(validated_data['owner'])
         return board
+    
+    def update(self, instance, validated_data):
+        instance.title = validated_data.get('title', instance.title)
+        instance.is_archived = validated_data.get('is_archived', instance.is_archived)
+        instance.save()
+        return instance
 
 
 class ListSerializer(serializers.HyperlinkedModelSerializer):

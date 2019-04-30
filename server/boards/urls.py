@@ -7,7 +7,8 @@ board_create = BoardAPI.as_view({
 })
 
 board_fetch = BoardAPI.as_view({
-    'get': 'fetch'
+    'get': 'fetch',
+    'put': 'update',
 })
 
 list_create = ListAPI.as_view({

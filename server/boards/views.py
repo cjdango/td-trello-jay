@@ -23,6 +23,20 @@ class BoardAPI(ViewSet):
 
         return Response(serializer.errors, status=400)
     
+    def update(self, *args, **kwargs):
+        board = get_object_or_404(Board, pk=kwargs['pk'], is_archived=False)
+        self.check_object_permissions(self.request, board)
+        serializer = BoardSerializer(
+            board, 
+            data=self.request.data, 
+            context={'request': self.request},
+            partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=200)
+
+    
     def all(self, *args, **kwargs):
         boards = Board.objects.filter(members=self.request.user, is_archived=False)
         serializer = BoardSerializer(boards, context={'request': self.request}, many=True)
