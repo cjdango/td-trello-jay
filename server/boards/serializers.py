@@ -34,34 +34,12 @@ class ListSerializer(serializers.HyperlinkedModelSerializer):
         model = List
         fields = ['pk', 'url', 'position', 'is_archived', 'board', 'title']
 
-    def create(self, validated_data):
-        lst = List.objects.create(**validated_data)
-        return lst
-
-    def update(self, instance, validated_data):
-        instance.title = validated_data.get('title', instance.title)
-        instance.position = validated_data.get('position', instance.position)
-        instance.is_archived = validated_data.get('is_archived', instance.is_archived)
-        instance.save()
-        return instance
-
 
 class CardSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name="boards:card_fetch")
-    lst = serializers.PrimaryKeyRelatedField(read_only=True)
+    lst = serializers.PrimaryKeyRelatedField(queryset=List.objects.all())
     is_archived = serializers.BooleanField(write_only=True)
     
     class Meta:
-        model = List
+        model = Card
         fields = ['pk', 'url', 'position', 'is_archived', 'lst', 'title']
-
-    def create(self, validated_data):
-        card = Card.objects.create(**validated_data)
-        return card
-
-    def update(self, instance, validated_data):
-        instance.title = validated_data.get('title', instance.title)
-        instance.position = validated_data.get('position', instance.position)
-        instance.is_archived = validated_data.get('is_archived', instance.is_archived)
-        instance.save()
-        return instance

@@ -55,19 +55,20 @@ class ListAPI(ViewSet):
     permission_classes = (IsAuthenticated, IsMember,)
 
     def create(self, *args, **kwargs):
-        user = self.request.user
-
-        board = get_object_or_404(Board, pk=kwargs['board_pk'], is_archived=False)
+        board = get_object_or_404(Board, pk=kwargs.get('board_pk'), is_archived=False)
         self.check_object_permissions(self.request, board)
 
-        serializer = ListSerializer(data=self.request.data, context={'request': self.request}, partial=True)
+        initial_data = {
+            **self.request.data,
+            'position': List.get_next_pos(),
+            'is_archived': False
+        }
 
-        if serializer.is_valid():
-            serializer.save(board=board)
-            return Response(serializer.data, status=200)
+        serializer = ListSerializer(data=initial_data, context={'request': self.request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save(board=board)
+        return Response(serializer.data, status=201)
 
-        return Response(serializer.errors, status=400)
-    
     def all(self, *args, **kwargs):
         board = get_object_or_404(Board, pk=kwargs['board_pk'], is_archived=False)
         self.check_object_permissions(self.request, board)
@@ -102,18 +103,20 @@ class CardAPI(ViewSet):
     permission_classes = (IsAuthenticated, IsMember,)
 
     def create(self, *args, **kwargs):
-        user = self.request.user
-
-        lst = get_object_or_404(List, pk=kwargs['list_pk'], is_archived=False)
+        lst = get_object_or_404(List, pk=kwargs.get('list_pk'), is_archived=False)
         self.check_object_permissions(self.request, lst)
 
-        serializer = CardSerializer(data=self.request.data, context={'request': self.request}, partial=True)
+        initial_data = {
+            **self.request.data,
+            'lst': lst.pk,
+            'position': Card.get_next_pos(),
+            'is_archived': False
+        }
 
-        if serializer.is_valid():
-            serializer.save(lst=lst)
-            return Response(serializer.data, status=200)
-
-        return Response(serializer.errors, status=400)
+        serializer = CardSerializer(data=initial_data, context={'request': self.request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save(lst=lst)
+        return Response(serializer.data, status=201)
     
     def all(self, *args, **kwargs):
         lst = get_object_or_404(List, pk=kwargs['list_pk'], is_archived=False)

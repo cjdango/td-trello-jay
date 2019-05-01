@@ -30,12 +30,11 @@ class List(models.Model):
     class Meta:
         ordering = ['position']
 
-    def save(self, *args, **kwargs):
-        if self.position is None:
-            max_pos = List.objects.all().aggregate(models.Max('position'))
-            self.position = (max_pos.get('position__max') or 0) + 1
-
-        return super(List, self).save(*args, **kwargs)
+    @classmethod
+    def get_next_pos(self, *args, **kwargs):
+        """Generate the next list position. (card_with_highest_position + 1)"""
+        max_pos = List.objects.all().aggregate(models.Max('position'))
+        return (max_pos.get('position__max') or 0) + 1
 
 
 class Card(models.Model):
@@ -49,10 +48,9 @@ class Card(models.Model):
 
     def __str__(self):
         return self.title
-
-    def save(self, *args, **kwargs):
-        if self.position is None:
-            max_pos = Card.objects.all().aggregate(models.Max('position'))
-            self.position = (max_pos.get('position__max') or 0) + 1
-
-        return super(Card, self).save(*args, **kwargs)
+        
+    @classmethod
+    def get_next_pos(self, *args, **kwargs):
+        """Generate the next card position. (card_with_highest_position + 1)"""
+        max_pos = Card.objects.all().aggregate(models.Max('position'))
+        return (max_pos.get('position__max') or 0) + 1
