@@ -1,0 +1,17 @@
+<form
+  [formGroup]="addTicketForm"
+  class="form-group"
+  (ngSubmit)="onSubmit()"
+  #f="ngForm"
+>
+  <input
+    matInput
+    type="text"
+    placeholder="Add ticket here"
+    formControlName="title"
+    required
+  />
+  <div class="spinner-wrapper" [class.submitted]="addTicketForm.submitted">
+    <mat-spinner [diameter]="19"></mat-spinner>
+  </div>
+</form>

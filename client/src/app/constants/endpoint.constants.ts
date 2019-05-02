@@ -19,3 +19,4 @@ export const BOARDS_CREATE  = BOARDS;
 /* LISTS
  */
 export const LISTS = `${BOARD_DETAILS}/lists`;
+export const LIST_DETAIL = `${BOARDS}/lists/:columnPK/cards`;

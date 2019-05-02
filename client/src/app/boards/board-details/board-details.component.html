@@ -1,8 +1,21 @@
 <div class="view board-details-view column-list">
   <app-add-column-form (addColumn)="columns.push($event)"></app-add-column-form>
+
+  <!-- COLUMN LIST -->
   <ul class="list">
     <li class="card column" *ngFor="let column of columns">
       <h2>{{ column.title }}</h2>
+      <!-- TICKET LIST -->
+      <app-ticket-list [tickets]="column.card_set"></app-ticket-list>
+      <!-- END OF TICKET LIST -->
+
+      <div class="ticket-form-wrapper">
+        <app-add-ticket-form
+          [columnPK]="column.pk"
+          (addTicket)="column.card_set.push($event)"
+        ></app-add-ticket-form>
+      </div>
     </li>
   </ul>
+  <!--END OF COLUMN LIST -->
 </div>
