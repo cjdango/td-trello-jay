@@ -18,7 +18,7 @@ const routes: Routes = [
     component: PasswordResetConfirmViewComponent
   },
   { path: 'boards', component: BoardsViewComponent },
-  { path: 'boards/:id', component: BoardDetailsComponent }
+  { path: 'boards/:boardPK', component: BoardDetailsComponent }
 ];
 
 @NgModule({

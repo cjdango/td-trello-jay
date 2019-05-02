@@ -1,3 +1,7 @@
-<p>
-  board-details works!
-</p>
+<div class="view board-details-view column-list">
+  <ul class="column-list">
+    <li class="column" *ngFor="let column of columns">
+      <h1>{{ column.title }}</h1>
+    </li>
+  </ul>
+</div>
