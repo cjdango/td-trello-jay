@@ -112,7 +112,6 @@ class CardAPI(ViewSet):
         initial_data = {
             **self.request.data,
             'lst': lst.pk,
-            'position': Card.get_next_pos(),
             'is_archived': False
         }
 

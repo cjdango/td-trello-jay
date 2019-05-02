@@ -26,7 +26,7 @@ class CardSerializer(serializers.HyperlinkedModelSerializer):
     
     class Meta:
         model = Card
-        fields = ['pk', 'url', 'position', 'is_archived', 'lst', 'title']
+        fields = ['pk', 'url', 'is_archived', 'lst', 'title']
 
     def create(self, validated_data):
         card = Card.objects.create(**validated_data)
@@ -58,7 +58,7 @@ class ListSerializer(serializers.HyperlinkedModelSerializer):
 
         if instance.cards_positions:
             cards_positions = ast.literal_eval(instance.cards_positions)
-            cards = [cards[x] for x in cards_positions]
+            cards = [cards.get(x) for x in cards_positions if cards.get(x)]
 
         return CardSerializer(
             cards, 

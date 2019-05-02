@@ -38,13 +38,6 @@ class Card(models.Model):
     title = models.CharField(max_length=50)
     lst = models.ForeignKey(List, on_delete=models.CASCADE)
     is_archived = models.BooleanField(default=False)
-    position = models.DecimalField(unique=True, max_digits=10, decimal_places=5)
 
     def __str__(self):
         return self.title
-        
-    @classmethod
-    def get_next_pos(self, *args, **kwargs):
-        """Generate the next card position. (card_with_highest_position + 1)"""
-        max_pos = Card.objects.all().aggregate(models.Max('position'))
-        return (max_pos.get('position__max') or 0) + 1

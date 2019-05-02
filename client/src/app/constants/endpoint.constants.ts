@@ -24,3 +24,4 @@ export const LIST_DETAIL = `${BOARDS}/lists/:columnPK`;
 /* CARDS
  */
 export const CARDS = `${LIST_DETAIL}/cards/`;
+export const CARD_DETAIL = `${BOARDS}/cards/:ticketPK`;
