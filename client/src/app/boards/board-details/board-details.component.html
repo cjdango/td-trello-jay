@@ -6,7 +6,7 @@
     <li class="card column" *ngFor="let column of columns">
       <h2>{{ column.title }}</h2>
       <!-- TICKET LIST -->
-      <app-ticket-list [tickets]="column.card_set"></app-ticket-list>
+      <app-ticket-list [tickets]="column.card_set" [columnPK]="column.pk"></app-ticket-list>
       <!-- END OF TICKET LIST -->
 
       <div class="ticket-form-wrapper">

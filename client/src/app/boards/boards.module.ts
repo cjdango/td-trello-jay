@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
+import { SortablejsModule } from 'angular-sortablejs';
+
 import { AppRoutingModule } from '../app-routing.module';
 import { MatModule } from '../mat.module';
 import { BoardsViewComponent } from './boards-view/boards-view.component';
@@ -20,6 +22,12 @@ import { TicketListComponent } from './ticket-list/ticket-list.component';
     AddTicketFormComponent,
     TicketListComponent
   ],
-  imports: [CommonModule, ReactiveFormsModule, MatModule, AppRoutingModule]
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatModule,
+    AppRoutingModule,
+    SortablejsModule
+  ]
 })
 export class BoardsModule {}

@@ -1,5 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 
+import { ColumnService } from '../board-details/column.service';
+
 @Component({
   selector: 'app-ticket-list',
   templateUrl: './ticket-list.component.html',
@@ -7,10 +9,28 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class TicketListComponent implements OnInit {
   @Input() tickets: Array<any>;
+  @Input() columnPK: string;
+  sortableOptions: { [key: string]: any };
 
-  constructor() { }
-
-  ngOnInit() {
+  constructor(private columnService: ColumnService) {
+    this.sortableOptions = {
+      group: 'tickets',
+      store: {
+        set: sortable => {
+          this.columnService
+            .updateColumn(
+              { cards_positions: sortable.toArray().map(Number) },
+              this.columnPK
+            )
+            .subscribe();
+        }
+      }
+    };
   }
 
+  ngOnInit() {}
+
+  get ticketsPKs() {
+    return this.tickets.map(ticket => ticket.pk);
+  }
 }

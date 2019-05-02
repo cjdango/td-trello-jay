@@ -22,13 +22,10 @@ class List(models.Model):
     title = models.CharField(max_length=50)
     board = models.ForeignKey(Board, on_delete=models.CASCADE)
     is_archived = models.BooleanField(default=False)
-    position = models.DecimalField(unique=True, max_digits=10, decimal_places=5)
+    cards_positions = models.TextField(null=True)
 
     def __str__(self):
         return self.title
-
-    class Meta:
-        ordering = ['position']
 
     @classmethod
     def get_next_pos(self, *args, **kwargs):
@@ -42,9 +39,6 @@ class Card(models.Model):
     lst = models.ForeignKey(List, on_delete=models.CASCADE)
     is_archived = models.BooleanField(default=False)
     position = models.DecimalField(unique=True, max_digits=10, decimal_places=5)
-
-    class Meta:
-        ordering = ['position']
 
     def __str__(self):
         return self.title

@@ -1,5 +1,5 @@
-<ul class="list">
-  <li class="card ticket" *ngFor="let ticket of tickets">
+<ul class="list" [sortablejs]="ticketsPKs" [sortablejsOptions]="sortableOptions">
+  <li class="card ticket" *ngFor="let ticket of tickets" [attr.data-id]="ticket.pk">
     <h3>{{ ticket.title }}</h3>
   </li>
 </ul>

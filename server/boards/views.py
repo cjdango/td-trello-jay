@@ -1,3 +1,5 @@
+import ast
+
 from django.shortcuts import render, get_object_or_404
 
 from rest_framework.viewsets import ViewSet
@@ -62,7 +64,6 @@ class ListAPI(ViewSet):
 
         initial_data = {
             **self.request.data,
-            'position': List.get_next_pos(),
             'is_archived': False
         }
 
@@ -89,9 +90,15 @@ class ListAPI(ViewSet):
     def update(self, *args, **kwargs):
         lst = get_object_or_404(List, pk=kwargs['pk'], is_archived=False)
         self.check_object_permissions(self.request, lst)
+
+        data = {
+            **self.request.data,
+            'cards_positions': str(self.request.data['cards_positions'])
+        }
+
         serializer = ListSerializer(
             lst, 
-            data=self.request.data, 
+            data=data, 
             context={'request': self.request},
             partial=True
         )
@@ -118,13 +125,17 @@ class CardAPI(ViewSet):
         serializer = CardSerializer(data=initial_data, context={'request': self.request})
         serializer.is_valid(raise_exception=True)
         serializer.save(lst=lst)
+
         return Response(serializer.data, status=201)
     
     def all(self, *args, **kwargs):
         lst = get_object_or_404(List, pk=kwargs['list_pk'], is_archived=False)
         self.check_object_permissions(self.request, lst)
 
-        cards = Card.objects.filter(lst=lst, is_archived=False)
+        cards = Card.objects.filter(lst=lst, is_archived=False).in_bulk()
+        cards_positions = ast.literal_eval(lst.cards_positions)
+        cards = [cards[x] for x in cards_positions]
+
         serializer = CardSerializer(cards, context={'request': self.request}, many=True)
         return Response(serializer.data, status=200)
 

@@ -28,7 +28,7 @@ export const resolveEndpoint = (
     urlParams: {[key: string]: any} = {},
     queryParams: {[key: string]: any} = {}
 ) => {
-    let endpoint = endpointFormat;
+    let endpoint = URLJoin(endpointFormat);
 
     // Check each url param and place it in it's specified position
     Object.keys(urlParams).forEach(paramName => {
