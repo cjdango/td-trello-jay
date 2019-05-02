@@ -23,7 +23,7 @@ export class ColumnService {
   }
 
   updateColumn(
-    payload: { cards_positions: Array<number> },
+    payload: { cards_positions: string },
     columnPK: string
   ): Observable<any> {
     const url = resolveEndpoint(LIST_DETAIL, { columnPK });

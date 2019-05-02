@@ -90,15 +90,9 @@ class ListAPI(ViewSet):
     def update(self, *args, **kwargs):
         lst = get_object_or_404(List, pk=kwargs['pk'], is_archived=False)
         self.check_object_permissions(self.request, lst)
-
-        data = {
-            **self.request.data,
-            'cards_positions': str(self.request.data['cards_positions'])
-        }
-
         serializer = ListSerializer(
             lst, 
-            data=data, 
+            data=self.request.data, 
             context={'request': self.request},
             partial=True
         )

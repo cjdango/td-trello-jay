@@ -17,9 +17,11 @@ export class TicketListComponent implements OnInit {
       group: 'tickets',
       store: {
         set: sortable => {
+          const cardsPositions = sortable.toArray().map(Number);
+
           this.columnService
             .updateColumn(
-              { cards_positions: sortable.toArray().map(Number) },
+              { cards_positions: String(cardsPositions) },
               this.columnPK
             )
             .subscribe();
