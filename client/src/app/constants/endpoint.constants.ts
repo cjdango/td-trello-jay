@@ -13,4 +13,4 @@ export const USERS_PASS_RESET_CONFIRM   = URLJoin(USERS, 'reset/:uid/:token');
 /* BOARDS
  */
 export const BOARDS         = 'boards';
-export const BOARDS_CREATE  = URLJoin(BOARDS, 'create');
+export const BOARDS_CREATE  = BOARDS;

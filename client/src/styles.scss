@@ -3,6 +3,17 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+.view {
+    .spinner-wrapper {
+        display: none;
+        justify-content: center;
+
+        &.submitted {
+            display: inline-flex;
+        }
+    }
+}
+
 .view.users-view {
     padding-top: 5rem;
     height: 100%;
@@ -12,15 +23,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
         flex-direction: column;
         width: 400px;
         margin: 0 auto;
-
-        .spinner-wrapper {
-            display: none;
-            justify-content: center;
-
-            &.submitted {
-                display: inline-flex;
-            }
-        }
 
         .btn {
             margin-top: .5rem;            

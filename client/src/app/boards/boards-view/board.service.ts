@@ -15,4 +15,9 @@ export class BoardService {
     const url = BOARDS;
     return this.http.get<any>(url);
   }
+
+  createBoard(paylaod: { title: string }): Observable<any> {
+    const url = BOARDS_CREATE;
+    return this.http.post<any>(url, paylaod);
+  }
 }

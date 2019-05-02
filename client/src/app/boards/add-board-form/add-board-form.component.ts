@@ -1,5 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, Validators, FormGroupDirective } from '@angular/forms';
+import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
+import { FormBuilder, FormGroupDirective } from '@angular/forms';
+
+import { AddBoardFormForm } from './add-board-form.form';
+import { BoardService } from '../boards-view/board.service';
+import { AlertService } from 'src/app/components/alert/alert.service';
 
 @Component({
   selector: 'app-add-board-form',
@@ -8,13 +12,42 @@ import { FormBuilder, Validators, FormGroupDirective } from '@angular/forms';
 })
 export class AddBoardFormComponent implements OnInit {
   @ViewChild('f') ngForm: FormGroupDirective;
+  @Output() addBoard = new EventEmitter<any>();
 
-  submitted = false;
-  addBoardForm = this.fb.group({
-    title: ['', [Validators.required]]
-  });
+  addBoardForm: AddBoardFormForm;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private boardService: BoardService,
+    private alertService: AlertService
+  ) {
+    this.addBoardForm = new AddBoardFormForm();
+  }
 
   ngOnInit() {}
+
+  onSubmit() {
+    // Clear alert message.
+    // There might be message from previous
+    // onSubmit() calls
+    this.alertService.clearMessage();
+    this.addBoardForm.handleSubmit(this.sendRequest.bind(this));
+  }
+
+  sendRequest(payload) {
+    this.boardService.createBoard(payload).subscribe(
+      data => {
+        this.addBoardForm.handleSuccess();
+        this.ngForm.resetForm();
+        this.addBoard.emit(data);
+      },
+      err => {
+        const nonFieldErrs = this.addBoardForm.handleErrors(err);
+
+        // Handle non field errors separately
+        if (nonFieldErrs) {
+          this.alertService.error(nonFieldErrs[0]);
+        }
+      }
+    );
+  }
 }
