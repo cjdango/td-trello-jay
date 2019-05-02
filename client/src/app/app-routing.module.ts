@@ -6,6 +6,7 @@ import { LoginViewComponent } from './users/login-view/login-view.component';
 import { PasswordResetViewComponent } from './users/password-reset-view/password-reset-view.component';
 import { PasswordResetConfirmViewComponent } from './users/password-reset-confirm-view/password-reset-confirm-view.component';
 import { BoardsViewComponent } from './boards/boards-view/boards-view.component';
+import { BoardDetailsComponent } from './boards/board-details/board-details.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -16,7 +17,8 @@ const routes: Routes = [
     path: 'reset-password/:uid/:token',
     component: PasswordResetConfirmViewComponent
   },
-  { path: 'boards', component: BoardsViewComponent }
+  { path: 'boards', component: BoardsViewComponent },
+  { path: 'boards/:id', component: BoardDetailsComponent }
 ];
 
 @NgModule({
