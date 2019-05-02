@@ -1,4 +1,5 @@
 <div class="view board-details-view column-list">
+  <app-add-column-form (addColumn)="columns.push($event)"></app-add-column-form>
   <ul class="column-list">
     <li class="column" *ngFor="let column of columns">
       <h1>{{ column.title }}</h1>

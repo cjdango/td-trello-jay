@@ -1,3 +1,11 @@
-<p>
-  add-column-form works!
-</p>
+<form [formGroup]="addColumnForm" class="form-group" (ngSubmit)="onSubmit()" #f="ngForm">  
+    <input matInput type="text" placeholder="List title" formControlName="title" required>
+    
+    <button mat-flat-button color="primary" type="submit" class="btn" [disabled]="addColumnForm.submitted">
+      <span>Add list</span>
+      <div class="spinner-wrapper" [class.submitted]="addColumnForm.submitted">
+          <mat-spinner [diameter]="19"></mat-spinner>
+      </div>
+    </button>
+  </form>
+  

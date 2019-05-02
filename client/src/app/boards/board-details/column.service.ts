@@ -16,4 +16,9 @@ export class ColumnService {
     const url = resolveEndpoint(LISTS, { boardPK });
     return this.http.get<any>(url);
   }
+
+  createColumn(paylaod: { title: string }, boardPK: string): Observable<any> {
+    const url = resolveEndpoint(LISTS, { boardPK });
+    return this.http.post<any>(url, paylaod);
+  }
 }
