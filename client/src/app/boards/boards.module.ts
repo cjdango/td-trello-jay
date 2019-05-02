@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
+import { AppRoutingModule } from '../app-routing.module';
 import { MatModule } from '../mat.module';
 import { BoardsViewComponent } from './boards-view/boards-view.component';
 import { AddBoardFormComponent } from './add-board-form/add-board-form.component';
@@ -10,6 +11,6 @@ import { AddColumnFormComponent } from './add-column-form/add-column-form.compon
 
 @NgModule({
   declarations: [BoardsViewComponent, AddBoardFormComponent, BoardDetailsComponent, AddColumnFormComponent],
-  imports: [CommonModule, ReactiveFormsModule, MatModule]
+  imports: [CommonModule, ReactiveFormsModule, MatModule, AppRoutingModule]
 })
 export class BoardsModule {}

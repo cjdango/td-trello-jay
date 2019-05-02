@@ -1,0 +1,9 @@
+.column-list {
+    display: flex;
+
+    .list {
+        margin: 0 auto;
+        flex-wrap: nowrap;
+        align-items: flex-start;
+    }
+}

@@ -1,8 +1,10 @@
 <div class="view boards-view boards-list">
   <app-add-board-form (addBoard)="boards.push($event)"></app-add-board-form>
-  <ul class="board-list">
+  <ul class="list">
     <li class="card" *ngFor="let board of boards">
-      <h1>{{board.title}}</h1>
+      <a routerLink="/boards/{{ board.pk }}">
+        <h1>{{ board.title }}</h1>
+      </a>
     </li>
   </ul>
 </div>

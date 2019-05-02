@@ -1,7 +1,18 @@
-<form [formGroup]="addColumnForm" class="form-group" (ngSubmit)="onSubmit()" #f="ngForm">  
-    <input matInput type="text" placeholder="List title" formControlName="title" required>
-    <div class="spinner-wrapper" [class.submitted]="addColumnForm.submitted">
-        <mat-spinner [diameter]="19"></mat-spinner>
-    </div>
-  </form>
-  
+<form
+  [formGroup]="addColumnForm"
+  class="form-group card"
+  (ngSubmit)="onSubmit()"
+  #f="ngForm"
+>
+  <h2>Add list</h2>
+  <input
+    matInput
+    type="text"
+    placeholder="List title"
+    formControlName="title"
+    required
+  />
+  <div class="spinner-wrapper" [class.submitted]="addColumnForm.submitted">
+    <mat-spinner [diameter]="19"></mat-spinner>
+  </div>
+</form>
