@@ -21,12 +21,7 @@ export class GuestService {
 
   login(creds: { email: string; password: string }): Observable<any> {
     const url = USERS_LOGIN;
-    const request = this.http.post<any>(url, creds);
-    request.subscribe(data =>
-      // TODO: Create AuthService
-      localStorage.setItem('user', JSON.stringify(data))
-    );
-    return request;
+    return this.http.post<any>(url, creds);
   }
 
   createUser(user: User): Observable<any> {

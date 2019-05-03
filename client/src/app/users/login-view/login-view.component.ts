@@ -39,6 +39,8 @@ export class LoginViewComponent implements OnInit {
       data => {
         this.loginForm.handleSuccess();
         this.ngForm.resetForm();
+        // TODO: Create AuthService
+        localStorage.setItem('user', JSON.stringify(data));
         this.router.navigate(['/boards']);
       },
       err => {
