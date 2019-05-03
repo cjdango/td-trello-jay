@@ -17,12 +17,16 @@ import {
   providedIn: 'root'
 })
 export class GuestService {
-
   constructor(private http: HttpClient) {}
 
   login(creds: { email: string; password: string }): Observable<any> {
     const url = USERS_LOGIN;
-    return this.http.post<any>(url, creds);
+    const request = this.http.post<any>(url, creds);
+    request.subscribe(data =>
+      // TODO: Create AuthService
+      localStorage.setItem('user', JSON.stringify(data))
+    );
+    return request;
   }
 
   createUser(user: User): Observable<any> {
