@@ -1,0 +1,10 @@
+<form
+  [formGroup]="archiveBoardForm"
+  class="form-group"
+  (ngSubmit)="onSubmit()"
+  #f="ngForm"
+>
+  <button mat-flat-button color="primary" type="submit" class="btn" [disabled]="archiveBoardForm.submitted">
+    X
+  </button>
+</form>

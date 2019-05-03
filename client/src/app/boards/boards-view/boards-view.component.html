@@ -1,10 +1,14 @@
 <div class="view boards-view boards-list">
   <app-add-board-form (addBoard)="boards.push($event)"></app-add-board-form>
   <ul class="list">
-    <li class="card" *ngFor="let board of boards">
-      <a routerLink="/boards/{{ board.pk }}">
-        <h1>{{ board.title }}</h1>
-      </a>
-    </li>
+    <ng-container *ngFor="let board of boards">
+      <li class="card" *ngIf="!board.is_archived">
+        <app-archive-board-form (archiveBoard)="board.is_archived = $event.is_archived" [boardPK]="board.pk"></app-archive-board-form>
+        <a routerLink="/boards/{{ board.pk }}">
+          <h1>{{ board.title }}</h1>
+        </a>
+      </li>
+    </ng-container>
+    
   </ul>
 </div>

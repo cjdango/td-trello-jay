@@ -42,7 +42,7 @@ class BoardAPI(ViewSet):
 
     
     def all(self, *args, **kwargs):
-        boards = Board.objects.filter(members=self.request.user, is_archived=False)
+        boards = Board.objects.filter(members=self.request.user)
         serializer = BoardSerializer(boards, context={'request': self.request}, many=True)
         return Response(serializer.data, status=200)
     

@@ -12,6 +12,7 @@ import { BoardDetailsComponent } from './board-details/board-details.component';
 import { AddColumnFormComponent } from './add-column-form/add-column-form.component';
 import { AddTicketFormComponent } from './add-ticket-form/add-ticket-form.component';
 import { TicketListComponent } from './ticket-list/ticket-list.component';
+import { ArchiveBoardFormComponent } from './boards-view/archive-board-form/archive-board-form.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { TicketListComponent } from './ticket-list/ticket-list.component';
     BoardDetailsComponent,
     AddColumnFormComponent,
     AddTicketFormComponent,
-    TicketListComponent
+    TicketListComponent,
+    ArchiveBoardFormComponent
   ],
   imports: [
     CommonModule,
