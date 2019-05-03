@@ -1,13 +1,17 @@
 .column-list {
-    display: flex;
+  display: flex;
 
-    .list {
-        margin-top: 0;
-        flex-wrap: nowrap;
-        align-items: flex-start;
-    }
+  .list {
+    margin-top: 0;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+  }
 
-    .ticket-form-wrapper {
-        margin-top: 1rem;
-    }
+  .ticket-form-wrapper {
+    margin-top: 1rem;
+  }
+
+  .drop-placeholder {
+    color: #fff;
+  }
 }

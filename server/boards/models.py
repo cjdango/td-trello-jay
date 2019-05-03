@@ -1,3 +1,5 @@
+import ast
+
 from decimal import Decimal
 
 from django.db import models
@@ -13,26 +15,36 @@ class Board(models.Model):
     members = models.ManyToManyField(
         get_user_model(), related_name='board_set')
     is_archived = models.BooleanField(default=False)
+    lists_positions = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.title
+
+    def get_sorted_lists(self, *args, **kwargs):
+        lists = self.list_set.all().in_bulk()
+
+        if self.lists_positions:
+            lists_positions = ast.literal_eval(self.lists_positions)
+            lists = [lists.get(x) for x in lists_positions if lists.get(x)]
+        return lists
 
 
 class List(models.Model):
     title = models.CharField(max_length=50)
     board = models.ForeignKey(Board, on_delete=models.CASCADE)
     is_archived = models.BooleanField(default=False)
-    cards_positions = models.TextField(null=True)
+    cards_positions = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.title
 
-    @classmethod
-    def get_next_pos(self, *args, **kwargs):
-        """Generate the next list position. (card_with_highest_position + 1)"""
-        max_pos = List.objects.all().aggregate(models.Max('position'))
-        return (max_pos.get('position__max') or 0) + 1
+    def get_sorted_cards(self, *args, **kwargs):
+        cards = self.card_set.all().in_bulk()
 
+        if self.cards_positions:
+            cards_positions = ast.literal_eval(self.cards_positions)
+            cards = [cards.get(x) for x in cards_positions if cards.get(x)]
+        return cards
 
 class Card(models.Model):
     title = models.CharField(max_length=50)

@@ -2,8 +2,8 @@
   <app-add-column-form (addColumn)="columns.push($event)"></app-add-column-form>
 
   <!-- COLUMN LIST -->
-  <ul class="list">
-    <li class="card column" *ngFor="let column of columns">
+  <ul class="list" [sortablejs]="columnsPKs" [sortablejsOptions]="sortableOptions">
+    <li class="card column" *ngFor="let column of columns" [attr.data-id]=column.pk>
       <h2>{{ column.title }}</h2>
       <!-- TICKET LIST -->
       <app-ticket-list [tickets]="column.card_set" [columnPK]="column.pk"></app-ticket-list>

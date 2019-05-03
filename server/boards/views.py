@@ -75,8 +75,7 @@ class ListAPI(ViewSet):
     def all(self, *args, **kwargs):
         board = get_object_or_404(Board, pk=kwargs['board_pk'], is_archived=False)
         self.check_object_permissions(self.request, board)
-
-        lists = List.objects.filter(board=board, is_archived=False)
+        lists = board.get_sorted_lists()
         serializer = ListSerializer(lists, context={'request': self.request}, many=True)
         return Response(serializer.data, status=200)
 

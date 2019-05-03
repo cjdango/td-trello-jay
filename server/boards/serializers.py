@@ -9,15 +9,24 @@ class BoardSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name="boards:board_fetch")
     owner = serializers.PrimaryKeyRelatedField(read_only=True)
     members = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
+    list_set = serializers.SerializerMethodField()
     
     class Meta:
         model = Board
-        fields = ['pk', 'url', 'title', 'is_archived', 'owner', 'members']
+        fields = ['pk', 'url', 'lists_positions', 'title', 'is_archived', 'owner', 'members', 'list_set']
 
     def create(self, validated_data):
         board = Board.objects.create(**validated_data)
         board.members.add(validated_data['owner'])
         return board
+
+    def get_list_set(self, instance):
+        lists = instance.get_sorted_lists()
+        return ListSerializer(
+            lists, 
+            context={'request': self.context['request']},
+            many=True
+        ).data
 
 class CardSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name="boards:card_fetch")
@@ -54,12 +63,7 @@ class ListSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['pk', 'url', 'cards_positions', 'is_archived', 'board', 'title', 'card_set']
 
     def get_card_set(self, instance):
-        cards = instance.card_set.all().in_bulk()
-
-        if instance.cards_positions:
-            cards_positions = ast.literal_eval(instance.cards_positions)
-            cards = [cards.get(x) for x in cards_positions if cards.get(x)]
-
+        cards = instance.get_sorted_cards()
         return CardSerializer(
             cards, 
             context={'request': self.context['request']},
